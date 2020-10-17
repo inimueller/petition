@@ -1,26 +1,37 @@
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-const canvasJQ = $("canvas");
-const signature = $('input[name="signature"]');
+const canvas = $("canvas");
+const ctx = $("#canvas")[0].getContext("2d");
+const signature = $("signature");
 
 // Making canvasJQ draw
 
-canvasJQ.on("mousedown", (e) => {
-    let x = e.clientX - canvasJQ.eq(0).offset().left;
-    let y = e.clientY - canvasJQ.eq(0).offset().top;
+canvas.on("mousedown", (e) => {
+    function colorFromCSSClass(className) {
+        var tmp = document.createElement("div"),
+            color;
+        tmp.style.cssText =
+            "position:fixed;left:-100px;top:-100px;width:1px;height:1px";
+        tmp.className = className;
+        document.body.appendChild(tmp); // required in some browsers
+        color = getComputedStyle(tmp).getPropertyValue("color");
+        document.body.removeChild(tmp);
+        return color;
+    }
 
-    ctx.moveTo(x, y);
+    let x = e.clientX - canvas.eq(0).offset().left;
+    let y = e.clientY - canvas.eq(0).offset().top;
     ctx.beginPath();
-    // console.log("mousedown");
-
-    canvasJQ.on("mousemove", (e) => {
+    ctx.moveTo(x, y);
+    console.log("mousedown: ");
+    canvas.on("mousemove", (e) => {
+        let x = e.clientX - canvas.eq(0).offset().left;
+        let y = e.clientY - canvas.eq(0).offset().top;
         ctx.lineTo(x, y);
         ctx.stroke();
-        // console.log("mousemove");
+        ctx.strokeStyle = colorFromCSSClass("myStyle");
+        console.log("mousemove: ");
     });
-    canvasJQ.on("mouseup", (e) => {
-        canvasJQ.unbind("mousemove");
-        signature.val(canvas.toDataUrl());
-        console.log("mouseup");
+    canvas.on("mouseup", (e) => {
+        signature.val($("#canvas")[0].toDataURL());
+        canvas.unbind("mousemove");
     });
 });
