@@ -13,7 +13,7 @@ exports.addSignature = (first, last, signature) => {
         VALUES ($1, $2, $3) 
         RETURNING id
         `,
-        (first, last, signature)
+        [first, last, signature]
 
         //to avoid sql injections!
     );
