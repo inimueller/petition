@@ -31,6 +31,7 @@ img {
 footer {
     margin-top: 200px;
 }
+
 footer p {
     font-size: 12px;
     text-align: center;
@@ -69,7 +70,8 @@ button {
     background-color: black;
     color: blueviolet;
     position: absolute;
-    left: 45%;
+    left: 43%;
+    margin: 0 auto;
     margin-top: 40px;
 }
 

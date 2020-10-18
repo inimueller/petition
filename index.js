@@ -35,7 +35,7 @@ app.get("/", (req, res) => {
     console.log("get request to / route happened");
 });
 
-//// go get the petition html <---
+//// go to the petition handlebar <---
 
 app.get("/petition", (req, res) => {
     //if signed session "cookie" exists, redirect the user to the signed paged
@@ -48,6 +48,28 @@ app.get("/petition", (req, res) => {
         });
     }
 });
+
+// POST to table
+
+app.post("/petition", (req, res) => {
+    const { first, last, signature } = req.body;
+    // here I need to set a cookie to redirect the user to the signed page ??
+    if (first !== "" && last !== "" && signature !== "") {
+        db.addSignature(first, last, signature)
+            .then((results) => {
+                req.session.signed = results.rows[0].id;
+                res.redirect("/signed");
+            })
+            .catch((err) => {
+                console.log("Error during addSignature", err);
+            });
+    } else {
+        res.render("petition", {
+            empty: true,
+        });
+    }
+});
+
 /////////////port listener/////////////
 
 app.listen(8000, () => console.log("Ini's petition server up and running"));
