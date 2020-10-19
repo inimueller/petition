@@ -1,6 +1,7 @@
 const canvas = $("canvas");
+const cnv = document.getElementById("canvas");
 const ctx = $("#canvas")[0].getContext("2d");
-const signature = $("signature");
+const signature = $('input[name="signature"]');
 
 // Making canvasJQ draw
 
@@ -30,8 +31,9 @@ canvas.on("mousedown", (e) => {
         ctx.strokeStyle = colorFromCSSClass("myStyle");
         console.log("mousemove: ");
     });
-    canvas.on("mouseup", (e) => {
-        signature.val($("#canvas")[0].toDataURL());
-        canvas.unbind("mousemove");
+    canvas.on("mouseup", () => {
+        signature.val(cnv.toDataURL());
+        // signature.val($("#canvas")[0].toDataURL());
+        canvas.off("mousemove");
     });
 });

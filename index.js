@@ -53,13 +53,16 @@ app.get("/petition", (req, res) => {
 
 app.post("/petition", (req, res) => {
     const { first, last, signature } = req.body;
+    console.log(first, last, signature);
     // here I need to set a cookie to redirect the user to the signed page ??
     if (first !== "" && last !== "" && signature !== "") {
         db.addSignature(first, last, signature)
             .then((results) => {
+                console.log(results);
                 req.session.signed = results.rows[0].id;
                 res.redirect("/signed");
             })
+
             .catch((err) => {
                 console.log("Error during addSignature", err);
             });
