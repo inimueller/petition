@@ -35,7 +35,8 @@ app.get("/", (req, res) => {
     console.log("get request to / route happened");
 });
 
-//// go to the petition handlebar <---
+// 2 . if no cookie, it renders the petition handlebar
+// otherwise it redirects to the signed page
 
 app.get("/petition", (req, res) => {
     //if signed session "cookie" exists, redirect the user to the signed paged
@@ -49,6 +50,43 @@ app.get("/petition", (req, res) => {
     }
 });
 
+// 3. if there is a cookie, render signers name, image of signature, the count of signers
+// and the link to the signers list
+// otherwise redirects to petition
+
+app.get("/signed", (req, res) => {
+    const { signed } = req.session;
+    if (signed) {
+        db.countSignatures().then((arg) => {
+            const count = arg.rows[0].count;
+            db.getCurrentSigner(signed).then(({ rows }) => {
+                // console.log("rows:", rows);
+                res.render("signed", {
+                    rows,
+                    count,
+                });
+            });
+        });
+    } else {
+        res.redirect("/petition");
+    }
+});
+
+// 4. if there is a cookie, it shows the list of signers, otherwise redirects to petition
+
+app.get("/signers", (req, res) => {
+    const { signed } = req.session;
+    if (signed) {
+        db.getSigners().then(({ rows }) => {
+            res.render("signers", {
+                rows,
+            });
+        });
+    } else {
+        res.redirect("/petition");
+    }
+});
+
 // POST to table
 
 app.post("/petition", (req, res) => {
@@ -58,7 +96,7 @@ app.post("/petition", (req, res) => {
     if (first !== "" && last !== "" && signature !== "") {
         db.addSignature(first, last, signature)
             .then((results) => {
-                console.log(results);
+                // console.log(results);
                 req.session.signed = results.rows[0].id;
                 res.redirect("/signed");
             })

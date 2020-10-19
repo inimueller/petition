@@ -1,7 +1,8 @@
   
-<h1>Thank you for trusting me</h1>
+{{#rows}}
+<h1>Thank you {{ first }}for trusting me</h1>
 
-<img src="{{imgUrl}}">
-// this comes from Piotr's canvas! 
-
-<a href="/signers">See all {{rows.[0].count}} signers</a>
+<img id="signatureimg" src="{{ signature }}">
+{{!-- this comes from Piotr's canvas!  --}}
+{{/rows}}
+<a id="seesigners" href="/signers">See all {{ count }} signers</a>

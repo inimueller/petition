@@ -6,6 +6,7 @@ const signature = $('input[name="signature"]');
 // Making canvasJQ draw
 
 canvas.on("mousedown", (e) => {
+    ///// to change the stroke color ->
     function colorFromCSSClass(className) {
         var tmp = document.createElement("div"),
             color;
@@ -17,6 +18,8 @@ canvas.on("mousedown", (e) => {
         document.body.removeChild(tmp);
         return color;
     }
+
+    ///// to draw the line ->
 
     let x = e.clientX - canvas.eq(0).offset().left;
     let y = e.clientY - canvas.eq(0).offset().top;

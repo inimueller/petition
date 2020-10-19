@@ -16,7 +16,7 @@ h1 {
     text-align: center;
 }
 
-img {
+#crystal {
     max-width: 100px;
     margin-top: 20px;
     margin-bottom: 60px;
@@ -41,6 +41,14 @@ p {
     font-size: 18px;
     text-align: center;
 }
+
+/* a {
+    font-size: 16px;
+    text-align: center;
+    margin: auto;
+    margin-left: auto;
+    margin-right: auto;
+} */
 
 canvas {
     background-color: black;
@@ -91,5 +99,17 @@ input {
 
 form {
     margin-top: 20px;
+    text-align: center;
+}
+
+#allsigners {
+    margin-top: 5px;
+    text-align: center;
+}
+
+#seesigners {
+    font-size: 16px;
+    margin: auto;
+    /* margin-top: 5px; */
     text-align: center;
 }

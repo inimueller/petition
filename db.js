@@ -24,6 +24,11 @@ exports.getSigners = () => {
     return db.query(`SELECT * FROM signatures`);
 };
 
+// Gets current signer (cookie set to that id)
+module.exports.getCurrentSigner = (cookie) => {
+    return db.query(`SELECT * FROM signatures WHERE id=${cookie}`);
+};
+
 // Counts how many people signed ->
 exports.countSignatures = () => {
     return db.query(`SELECT count(*) FROM signatures`);
