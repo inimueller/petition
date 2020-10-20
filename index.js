@@ -12,6 +12,8 @@ const app = express();
 const db = require("./db");
 const handlebars = require("express-handlebars");
 const cookieSession = require("cookie-session");
+const { hash } = require("./bc");
+// const bcrypt = require("./bcrypt");
 
 /////////////middleware/////////////
 
@@ -31,8 +33,15 @@ app.use(express.static("./public"));
 // 1. "/" redirects to petition
 
 app.get("/", (req, res) => {
-    res.redirect("/petition");
-    console.log("get request to / route happened");
+    const { user, signed } = req.session;
+    if (signed) {
+        res.redirect("/signed");
+    } else if (user) {
+        res.redirect("/petition");
+    } else {
+        res.redirect("/register");
+    }
+    // console.log("get request to / route happened");
 });
 
 // 2 . if no cookie, it renders the petition handlebar
@@ -40,6 +49,7 @@ app.get("/", (req, res) => {
 
 app.get("/petition", (req, res) => {
     //if signed session "cookie" exists, redirect the user to the signed paged
+
     const { signed } = req.session;
     if (signed) {
         res.redirect("/signed");
@@ -90,13 +100,16 @@ app.get("/signers", (req, res) => {
 // POST to table
 
 app.post("/petition", (req, res) => {
-    const { first, last, signature } = req.body;
-    console.log(first, last, signature);
+    // enter the user's id into the database GET /petition HOW??? like this?
+    // const { id } = req.session.user; //????
+    // -----
+    const { signature } = req.body;
+    const { id } = req.session.user;
     // here I need to set a cookie to redirect the user to the signed page ??
-    if (first !== "" && last !== "" && signature !== "") {
-        db.addSignature(first, last, signature)
+    if (signature !== "") {
+        db.addSignature(signature, id)
             .then((results) => {
-                // console.log(results);
+                console.log(results);
                 req.session.signed = results.rows[0].id;
                 res.redirect("/signed");
             })
@@ -109,6 +122,64 @@ app.post("/petition", (req, res) => {
             empty: true,
         });
     }
+});
+
+// ---------> Part 3 new routes <---------- \\
+
+// 1. GET register
+
+app.get("/", (req, res) => {
+    res.redirect("/register");
+    // console.log("get request to / route happened");
+});
+
+// 2. GET register
+
+app.get("/register", (req, res) => {
+    res.render("register");
+});
+
+// 2. GET login
+
+// app.get("/login", (req, res) => {
+//     res.render("login");
+// });
+
+app.post("/register", (req, res) => {
+    // grab the user input and read it on the server
+    // like this? ->
+    const { first, last, email, password } = req.body;
+    console.log("datos ingresados: ", first, last, email, password);
+
+    // checks that all the fields are filled
+    if (
+        first !== "" &&
+        last !== "" &&
+        email !== "" &&
+        password !== ""
+        // hash the passowrd that the user typed and THEN-> insert a row in the USERS table
+    ) {
+        // TODO Que pasa cuando el email ya esta en la DB ?
+        hash(password)
+            .then((hashedPw) => {
+                console.log("parametros:", first, last, email, hashedPw);
+                db.createUser(first, last, email, hashedPw)
+                    .then((results) => {
+                        console.log("insertion result: ", results.rows[0]);
+                        req.session.user = results.rows[0];
+                        res.redirect("./petition");
+                    })
+                    .catch((err) => {
+                        console.log("err inserting data in the DB: ", err);
+                    });
+            })
+            .catch((err) => {
+                console.log("err hashing the ps: ", err);
+            });
+    }
+
+    //add userId in a cookie (val should be the id greated by posgress)
+    //if insert fails re-render template with error message
 });
 
 /////////////port listener/////////////

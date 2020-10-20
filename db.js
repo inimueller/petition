@@ -5,15 +5,15 @@ var db = spicedPg("postgres:postgres:postgres@localhost:5432/petition");
 
 // Adds the signers to db ->
 
-exports.addSignature = (first, last, signature) => {
+exports.addSignature = (signature, user_id) => {
     // console.log(firstname, lastname, signature);
     return db.query(
         `
-        INSERT INTO signatures (first, last, signature)
-        VALUES ($1, $2, $3) 
+        INSERT INTO signatures (signature, user_id)
+        VALUES ($1, $2) 
         RETURNING id
         `,
-        [first, last, signature]
+        [signature, user_id]
 
         //to avoid sql injections!
     );
@@ -21,7 +21,7 @@ exports.addSignature = (first, last, signature) => {
 
 // Gets the list of people who already signed ->
 exports.getSigners = () => {
-    return db.query(`SELECT * FROM signatures`);
+    return db.query(`SELECT * FROM users`);
 };
 
 // Gets current signer (cookie set to that id)
@@ -31,5 +31,17 @@ module.exports.getCurrentSigner = (cookie) => {
 
 // Counts how many people signed ->
 exports.countSignatures = () => {
-    return db.query(`SELECT count(*) FROM signatures`);
+    return db.query(`SELECT count(*) FROM users`);
+};
+// Adds user tu table
+
+exports.createUser = (first, last, email, password) => {
+    return db.query(
+        `
+        INSERT INTO users (first, last, email, password)
+        VALUES ($1, $2, $3, $4) 
+        RETURNING id
+        `,
+        [first, last, email, password]
+    );
 };
