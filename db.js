@@ -45,3 +45,7 @@ exports.createUser = (first, last, email, password) => {
         [first, last, email, password]
     );
 };
+
+exports.getUser = (email) => {
+    return db.query(`SELECT * FROM users WHERE email = $1`, [email]);
+};

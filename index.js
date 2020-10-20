@@ -12,7 +12,7 @@ const app = express();
 const db = require("./db");
 const handlebars = require("express-handlebars");
 const cookieSession = require("cookie-session");
-const { hash } = require("./bc");
+const { hash, compare } = require("./bc");
 // const bcrypt = require("./bcrypt");
 
 /////////////middleware/////////////
@@ -105,6 +105,7 @@ app.post("/petition", (req, res) => {
     // -----
     const { signature } = req.body;
     const { id } = req.session.user;
+    console.log(id);
     // here I need to set a cookie to redirect the user to the signed page ??
     if (signature !== "") {
         db.addSignature(signature, id)
@@ -124,9 +125,9 @@ app.post("/petition", (req, res) => {
     }
 });
 
-// ---------> Part 3 new routes <---------- \\
+// ---------> Part 3 NEW ROUTES <---------- \\
 
-// 1. GET register
+// 1. GET /
 
 app.get("/", (req, res) => {
     res.redirect("/register");
@@ -139,17 +140,56 @@ app.get("/register", (req, res) => {
     res.render("register");
 });
 
-// 2. GET login
+// 3. GET login
 
-// app.get("/login", (req, res) => {
-//     res.render("login");
-// });
+app.get("/login", (req, res) => {
+    res.render("login");
+});
+
+// 1. POST login
+
+app.post("/login", (req, res) => {
+    const { email, password } = req.body;
+    console.log("lol");
+    if (email !== "" && password !== "") {
+        db.getUser(email)
+            .then((results) => {
+                // console.log("from geUser > results: ", results);
+                const hashedPw = results.rows[0].password;
+                compare(password, hashedPw)
+                    .then((match) => {
+                        //if passowrd === hashedPw -> set cookie
+                        if (match) {
+                            req.session.user = {
+                                id: results.rows[0].id,
+                            };
+                            res.redirect("/petition");
+                        } else {
+                            console.log("pass is wrong");
+                            res.render("login", { fehler: "Wrong password!" });
+                        }
+                    })
+                    .catch((err) => {
+                        console.log("error in POST /login compare():", err);
+                        res.render("login", { fehler: "Wrong password!" });
+                    });
+            })
+            .catch((err) => {
+                console.log("error in POST /login getUser():", err);
+                res.render("login", { fehler: "Wrong password!" });
+            });
+    } else {
+        res.render("login");
+    }
+});
+
+// 2. POST register
 
 app.post("/register", (req, res) => {
     // grab the user input and read it on the server
     // like this? ->
     const { first, last, email, password } = req.body;
-    console.log("datos ingresados: ", first, last, email, password);
+    // console.log("datos ingresados: ", first, last, email, password);
 
     // checks that all the fields are filled
     if (
@@ -166,7 +206,7 @@ app.post("/register", (req, res) => {
                 db.createUser(first, last, email, hashedPw)
                     .then((results) => {
                         console.log("insertion result: ", results.rows[0]);
-                        req.session.user = results.rows[0];
+                        req.session.user = { id: results.rows[0] };
                         res.redirect("./petition");
                     })
                     .catch((err) => {
