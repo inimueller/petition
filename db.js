@@ -5,7 +5,7 @@ var db = spicedPg("postgres:postgres:postgres@localhost:5432/petition");
 
 // Adds the signers to db ->
 
-exports.addSignature = (signature, user_id) => {
+module.exports.addSignature = (signature, user_id) => {
     // console.log(firstname, lastname, signature);
     return db.query(
         `
@@ -20,22 +20,22 @@ exports.addSignature = (signature, user_id) => {
 };
 
 // Gets the list of people who already signed ->
-exports.getSigners = () => {
+module.exports.getSigners = () => {
     return db.query(`SELECT * FROM users`);
 };
 
 // Gets current signer (cookie set to that id)
 module.exports.getCurrentSigner = (cookie) => {
-    return db.query(`SELECT * FROM signatures WHERE id=${cookie}`);
+    return db.query(`SELECT * FROM signatures WHERE id=$1`, [cookie]);
 };
 
 // Counts how many people signed ->
-exports.countSignatures = () => {
+module.exports.countSignatures = () => {
     return db.query(`SELECT count(*) FROM users`);
 };
 // Adds user tu table
 
-exports.createUser = (first, last, email, password) => {
+module.exports.createUser = (first, last, email, password) => {
     return db.query(
         `
         INSERT INTO users (first, last, email, password)
@@ -46,6 +46,10 @@ exports.createUser = (first, last, email, password) => {
     );
 };
 
-exports.getUser = (email) => {
+module.exports.getUser = (email) => {
     return db.query(`SELECT * FROM users WHERE email = $1`, [email]);
+};
+
+module.exports.getIfSigned = (user_id) => {
+    return db.query(`SELECT * FROM signatures WHERE user_id = $1`, [user_id]);
 };
