@@ -54,7 +54,7 @@ app.get("/petition", (req, res) => {
     if (signed) {
         res.redirect("/signed");
     } else {
-        res.render("petition", {
+        res.render("register", {
             layout: "main",
         });
     }
@@ -221,6 +221,8 @@ app.post("/register", (req, res) => {
     //add userId in a cookie (val should be the id greated by posgress)
     //if insert fails re-render template with error message
 });
+
+// --------> Routes PART 4 <--------
 
 /////////////port listener/////////////
 

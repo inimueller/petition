@@ -16,6 +16,13 @@ h1 {
     text-align: center;
 }
 
+h3 {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+    color: antiquewhite;
+}
+
 #crystal {
     max-width: 100px;
     margin-top: 20px;
@@ -28,7 +35,8 @@ h1 {
 }
 
 footer {
-    margin-top: 200px;
+    margin-top: 140px;
+    position: sticky;
 }
 
 footer p {
@@ -71,13 +79,13 @@ button {
     padding-bottom: 5px;
     padding-right: 10px;
     padding-left: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    /* display: flex; */
+    /* justify-content: center; */
+    /* align-items: center; */
     background-color: black;
     color: blueviolet;
     position: absolute;
-    left: 43%;
+    left: 47%;
     margin: 0 auto;
     margin-top: 40px;
 }
