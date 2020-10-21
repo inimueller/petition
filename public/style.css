@@ -35,7 +35,7 @@ h3 {
 }
 
 footer {
-    margin-top: 140px;
+    margin-top: 120px;
     position: sticky;
 }
 
@@ -90,6 +90,10 @@ button {
     margin-top: 40px;
 }
 
+#definitely {
+    left: 43%;
+}
+
 input {
     font-size: 14px;
     font-family: monospace;
@@ -116,12 +120,13 @@ form {
 }
 
 #seesigners {
-    font-size: 16px;
-    margin: auto;
-    /* margin-top: 5px; */
-    text-align: center;
+    font-size: 18px;
+    margin-left: 350px;
+    margin-top: 5px;
+    /* text-align: center; */
 }
 
 #signatureimg {
     display: block;
+    margin: auto;
 }

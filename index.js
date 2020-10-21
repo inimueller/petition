@@ -54,7 +54,7 @@ app.get("/petition", (req, res) => {
     if (signed) {
         res.redirect("/signed");
     } else {
-        res.render("register", {
+        res.render("petition", {
             layout: "main",
         });
     }
@@ -207,7 +207,7 @@ app.post("/register", (req, res) => {
                     .then((results) => {
                         console.log("insertion result: ", results.rows[0]);
                         req.session.user = { id: results.rows[0] };
-                        res.redirect("./petition");
+                        res.redirect("/profile");
                     })
                     .catch((err) => {
                         console.log("err inserting data in the DB: ", err);
@@ -223,6 +223,20 @@ app.post("/register", (req, res) => {
 });
 
 // --------> Routes PART 4 <--------
+// EXTRA LOGOUT
+app.get("/logout", (req, res) => {
+    req.session = null;
+    res.redirect("/register");
+});
+
+app.get("/profile", (req, res) => {
+    res.render("profile");
+});
+
+app.post("/profile", (req, res) => {
+    //runs when the user clicks on submit
+    //
+});
 
 /////////////port listener/////////////
 
