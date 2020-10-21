@@ -240,4 +240,6 @@ app.post("/profile", (req, res) => {
 
 /////////////port listener/////////////
 
-app.listen(8000, () => console.log("Ini's petition server up and running"));
+app.listen(process.env.PORT || 8080, () =>
+    console.log("Ini's petition server up and running")
+);

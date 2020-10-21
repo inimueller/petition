@@ -1,7 +1,10 @@
 // all of our db queries live here
 
 var spicedPg = require("spiced-pg");
-var db = spicedPg("postgres:postgres:postgres@localhost:5432/petition");
+var db = spicedPg(
+    process.env.DATABASE_URL ||
+        `postgres:postgres:postgres@localhost:5432/petition`
+);
 
 // Adds the signers to db ->
 
