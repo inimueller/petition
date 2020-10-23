@@ -150,7 +150,7 @@ app.get("/login", (req, res) => {
 
 app.post("/login", (req, res) => {
     const { email, password } = req.body;
-    console.log("lol");
+    // console.log("thanks piotr!");
     if (email !== "" && password !== "") {
         db.getUser(email)
             .then((results) => {
@@ -163,6 +163,7 @@ app.post("/login", (req, res) => {
                             req.session.user = {
                                 id: results.rows[0].id,
                             };
+
                             res.redirect("/petition");
                         } else {
                             console.log("pass is wrong");
@@ -175,7 +176,7 @@ app.post("/login", (req, res) => {
                     });
             })
             .catch((err) => {
-                console.log("error in POST /login getUser():", err);
+                // console.log("error in POST /login getUser():", err);
                 res.render("login", { fehler: "Wrong password!" });
             });
     } else {
@@ -210,11 +211,18 @@ app.post("/register", (req, res) => {
                         res.redirect("/profile");
                     })
                     .catch((err) => {
-                        console.log("err inserting data in the DB: ", err);
+                        // console.log("err inserting data in the DB: ", err);
+                        res.render("register", {
+                            fehler: "Oops something went wrong and it's on me",
+                        });
                     });
             })
             .catch((err) => {
-                console.log("err hashing the ps: ", err);
+                // console.log("err hashing the ps: ", err);
+                res.render("register", {
+                    fehler:
+                        "Oops something went wrong while trying to protect your password",
+                });
             });
     }
 
@@ -235,11 +243,24 @@ app.get("/profile", (req, res) => {
 
 app.post("/profile", (req, res) => {
     //runs when the user clicks on submit
-    //
+
+    const { userId } = req.session;
+    const { age, city, url } = req.body;
+
+    db.addInfo(age, city, url, userId)
+        .then((results) => {
+            console.log("results form POST /profile", results.rows[0]);
+            req.session.profileCreated = true;
+            res.redirect("/petition");
+        })
+        .catch((err) => {
+            console.log("error with the profile", err);
+            res.render("profile");
+        });
 });
 
 /////////////port listener/////////////
 
-app.listen(process.env.PORT || 8080, () =>
+app.listen(process.env.PORT || 8000, () =>
     console.log("Ini's petition server up and running")
 );

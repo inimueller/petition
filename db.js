@@ -49,10 +49,58 @@ module.exports.createUser = (first, last, email, password) => {
     );
 };
 
+//  Checks if there is already a user with this email
+
 module.exports.getUser = (email) => {
     return db.query(`SELECT * FROM users WHERE email = $1`, [email]);
 };
 
+// Checks if the user already signed
+
 module.exports.getIfSigned = (user_id) => {
     return db.query(`SELECT * FROM signatures WHERE user_id = $1`, [user_id]);
+};
+
+// Adds info to the user's profile
+
+module.exports.addInfo = (age, city, url, user_id) => {
+    return db.query(
+        `
+        INSERT INTO user_profiles (age, city, url, user_id)
+        VALUES ($1, $2, $3, $4)
+        RETURNING *
+    `,
+        [age || null, city, url, user_id]
+        // ivana explained that using || avoids the err on age being negative or null
+    );
+};
+
+////////////////////// JOINING TABLES //////////////////////
+
+// 1. we need signatures because it will tell us whether or not the user signed the petition
+// 2. we need users to get the user's first and last name
+// 3. we need user_profiles to get the signers age, city, and url (if they provided any)
+
+module.exports.getSigners = () => {
+    return db.query(`
+    SELECT signatures.signature, users.first, users.last, user_profiles.age, user_profiles.city, user_profiles.url 
+    FROM signatures
+    JOIN users
+    ON users.id = signatures.user_id
+    JOIN user_profiles
+    ON users.id = user_profiles.user_id;
+    `);
+};
+
+module.exports.getProfile = (user_id) => {
+    return db.query(
+        `
+    SELECT users.first, users.last, users.email, user_profiles.age, user_profiles.city, user_profiles.url
+    FROM users
+    JOIN user_profiles
+    ON users.id = user_profiles.user_id 
+    WHERE user_id=$1   
+    `,
+        [user_id]
+    );
 };
