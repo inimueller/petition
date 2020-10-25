@@ -67,9 +67,11 @@ app.get("/petition", (req, res) => {
 app.get("/signed", (req, res) => {
     const { signed } = req.session;
     if (signed) {
+        const { id } = req.session.user;
         db.countSignatures().then((arg) => {
             const count = arg.rows[0].count;
-            db.getCurrentSigner(signed).then(({ rows }) => {
+            console.log("id firmante: ", signed);
+            db.getCurrentSigner(id).then(({ rows }) => {
                 // console.log("rows:", rows);
                 res.render("signed", {
                     rows,
@@ -110,7 +112,7 @@ app.post("/petition", (req, res) => {
     if (signature !== "") {
         db.addSignature(signature, id)
             .then((results) => {
-                console.log(results);
+                // console.log("results from add signature: ", results.rows[0].id);
                 req.session.signed = results.rows[0].id;
                 res.redirect("/signed");
             })
@@ -160,11 +162,17 @@ app.post("/login", (req, res) => {
                     .then((match) => {
                         //if passowrd === hashedPw -> set cookie
                         if (match) {
-                            req.session.user = {
-                                id: results.rows[0].id,
-                            };
-
-                            res.redirect("/petition");
+                            const id = results.rows[0].id;
+                            req.session.user = { id: id };
+                            db.getIfSigned(id).then((match) => {
+                                console.log("signd match", match.rows);
+                                if (match.rows[0]) {
+                                    req.session.signed = id;
+                                    res.redirect("/signed");
+                                } else {
+                                    res.redirect("/petition");
+                                }
+                            });
                         } else {
                             console.log("pass is wrong");
                             res.render("login", { fehler: "Wrong password!" });
@@ -206,14 +214,17 @@ app.post("/register", (req, res) => {
                 console.log("parametros:", first, last, email, hashedPw);
                 db.createUser(first, last, email, hashedPw)
                     .then((results) => {
-                        console.log("insertion result: ", results.rows[0]);
-                        req.session.user = { id: results.rows[0] };
+                        console.log("insertion result: ", results.rows[0].id);
+
+                        req.session.user = { id: results.rows[0].id };
                         res.redirect("/profile");
                     })
                     .catch((err) => {
                         // console.log("err inserting data in the DB: ", err);
                         res.render("register", {
-                            fehler: "Oops something went wrong and it's on me",
+                            fehler:
+                                "Oops something went wrong and it's on me: " +
+                                err,
                         });
                     });
             })
@@ -221,7 +232,8 @@ app.post("/register", (req, res) => {
                 // console.log("err hashing the ps: ", err);
                 res.render("register", {
                     fehler:
-                        "Oops something went wrong while trying to protect your password",
+                        "Oops something went wrong while trying to protect your password " +
+                        err,
                 });
             });
     }
@@ -244,10 +256,10 @@ app.get("/profile", (req, res) => {
 app.post("/profile", (req, res) => {
     //runs when the user clicks on submit
 
-    const { userId } = req.session;
+    const { id } = req.session.user;
     const { age, city, url } = req.body;
 
-    db.addInfo(age, city, url, userId)
+    db.addInfo(age, city, url, id)
         .then((results) => {
             console.log("results form POST /profile", results.rows[0]);
             req.session.profileCreated = true;

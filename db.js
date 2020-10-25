@@ -29,7 +29,7 @@ module.exports.getSigners = () => {
 
 // Gets current signer (cookie set to that id)
 module.exports.getCurrentSigner = (cookie) => {
-    return db.query(`SELECT * FROM signatures WHERE id=$1`, [cookie]);
+    return db.query(`SELECT * FROM signatures WHERE user_id=$1`, [cookie]);
 };
 
 // Counts how many people signed ->
@@ -64,6 +64,7 @@ module.exports.getIfSigned = (user_id) => {
 // Adds info to the user's profile
 
 module.exports.addInfo = (age, city, url, user_id) => {
+    console.log(age, city, url, user_id);
     return db.query(
         `
         INSERT INTO user_profiles (age, city, url, user_id)
