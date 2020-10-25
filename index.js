@@ -131,6 +131,7 @@ app.post("/petition", (req, res) => {
     console.log(id);
     // here I need to set a cookie to redirect the user to the signed page ??
     if (signature !== "") {
+        req.session.signed = true;
         db.addSignature(signature, id)
             .then((results) => {
                 // console.log("results from add signature: ", results.rows[0].id);
@@ -345,6 +346,17 @@ app.post("/edit", (req, res) => {
             });
         }
     }
+});
+
+// DELETE signature
+
+app.post("/deleteSignature", (req, res) => {
+    const { id } = req.session.user;
+    db.deleteSignature(id).then((results) => {
+        console.log("deleting signature", results.rows[0]);
+        req.session.signed = null;
+        res.redirect("/petition");
+    });
 });
 
 /////////////port listener/////////////

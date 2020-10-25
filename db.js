@@ -158,3 +158,12 @@ module.exports.updateProfile = (age, city, url, user_id) => {
         [age || null, city, url, user_id]
     );
 };
+
+module.exports.deleteSignature = (user_id) => {
+    return db.query(
+        `
+                DELETE FROM signatures WHERE user_id=$1
+        `,
+        [user_id]
+    );
+};
