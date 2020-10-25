@@ -99,6 +99,27 @@ app.get("/signers", (req, res) => {
     }
 });
 
+// GET signers by city
+
+app.get("/signers/:city", (req, res) => {
+    console.log("req.session at /city:", req.session);
+    console.log("req.params at /city:", req.params);
+    //const { userId, signed } = req.session;
+    const { city } = req.params;
+    const { signed } = req.session;
+    if (signed) {
+        db.getSignersByCity(city).then(({ rows }) => {
+            res.render("signersbycity", {
+                rows,
+            });
+        });
+    } else {
+        res.redirect("/petition");
+    }
+});
+
+// ________
+
 // POST to table
 
 app.post("/petition", (req, res) => {

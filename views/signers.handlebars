@@ -2,7 +2,19 @@
 
 {{#rows}}
 <div id="allsigners">
-{{first}} {{last}}
-
+ <p>
+                    {{#if url}}
+                        <a href="{{url}}" >{{first}} {{last}}</a>
+                    {{else}}   
+                        <a >{{first}} {{last}}</a>
+                    {{/if}}
+                 
+                    {{#if age}}
+                        <a>{{age}}</a>
+                    {{/if}} 
+                     {{#if city}}
+                        <a href="/signers/{{city}}">{{city}}</a>
+                    {{/if}} 
+                </p> 
 </div>
 {{/rows}}

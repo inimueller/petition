@@ -105,3 +105,18 @@ module.exports.getProfile = (user_id) => {
         [user_id]
     );
 };
+
+module.exports.getSignersByCity = (city) => {
+    return db.query(
+        `
+    SELECT signatures.signature, users.first, users.last, user_profiles.age, user_profiles.city, user_profiles.url 
+    FROM signatures
+    JOIN users
+    ON users.id = signatures.user_id
+    JOIN user_profiles
+    ON users.id = user_profiles.user_id 
+    WHERE city = $1 
+    `,
+        [city]
+    );
+};

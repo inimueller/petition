@@ -1,0 +1,20 @@
+
+{{#rows}}
+<p>These people from {{city}} have trusted me: <br> ...</p>
+<div id="allsignersbycity">
+ <p>
+                    {{#if url}}
+                        <a href="{{url}}" >{{first}} {{last}}</a>
+                    {{else}}   
+                        <a >{{first}} {{last}}</a>
+                    {{/if}}
+                 
+                    {{#if age}}
+                        <a>{{age}}</a>
+                    {{/if}} 
+                     {{#if city}}
+                        <a >{{city}}</a>
+                    {{/if}} 
+                </p> 
+</div>
+{{/rows}}
