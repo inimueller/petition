@@ -13,7 +13,7 @@ const db = require("./db");
 const handlebars = require("express-handlebars");
 const cookieSession = require("cookie-session");
 const { hash, compare } = require("./bc");
-// const bcrypt = require("./bcrypt");
+const csurf = require("csurf");
 
 /////////////middleware/////////////
 
@@ -29,6 +29,12 @@ app.set("view engine", "handlebars");
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static("./public"));
 
+app.use(csurf());
+app.use(function (req, res, next) {
+    res.locals.csrfToken = req.csrfToken();
+    res.set("x-frame-options", "DENY");
+    next();
+});
 /////////////routes/////////////
 // 1. "/" redirects to petition
 
