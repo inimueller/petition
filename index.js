@@ -292,6 +292,61 @@ app.post("/profile", (req, res) => {
         });
 });
 
+/////////// PART 5 //////////
+
+// 1. GET edit profile
+
+app.get("/edit", (req, res) => {
+    const { id } = req.session.user;
+    console.log("user id from edit : ", id);
+
+    db.getProfile(id).then(({ rows }) => {
+        res.render("edit", {
+            rows,
+        });
+    });
+});
+
+// 2. POST edit profile
+
+app.post("/edit", (req, res) => {
+    const { first, last, email, password, age, city, url } = req.body;
+    const { id } = req.session.user;
+
+    if (first !== "" && last !== "" && email !== "") {
+        if (password) {
+            hash(password).then((hashedPw) => {
+                db.updateUserPassword(first, last, email, hashedPw, id).then(
+                    (results) => {
+                        console.log(
+                            "results form POST /edit user",
+                            results.rows[0]
+                        );
+                        db.updateProfile(age, city, url, id).then((results) => {
+                            console.log(
+                                "results form POST profile",
+                                results.rows[0]
+                            );
+                            res.redirect("/signed");
+                        });
+                    }
+                );
+            });
+        } else {
+            db.updateUserNoPassword(first, last, email, id).then((results) => {
+                console.log(
+                    "results from POST without password",
+                    results.rows[0]
+                );
+                db.updateProfile(age, city, url, id).then((results) => {
+                    console.log("results form POST profile", results.rows[0]);
+                    res.redirect("/signed");
+                });
+            });
+        }
+    }
+});
+
 /////////////port listener/////////////
 
 app.listen(process.env.PORT || 8000, () =>

@@ -3,21 +3,20 @@
         <h3>Edit your profile</h4>
             
                 {{#rows}}
-                <span>Name</span></br>
+                
                     <input type="text" id="firstname" name="first" placeholder="Name" value="{{first}}">
-                <span></br>Lastname</span></br>
+                </br>
                     <input type="text" id="surname" name="last" placeholder="Lastname" value="{{last}}" >
-                <span></br>Email</span></br>
+                </br>
                     <input type="text" id="surname" name="email" placeholder="Email" value="{{email}}" >
-                <span></br>Password</span></br>
+               </br>
                     <input type="text" id="surname" name="password" placeholder="Password" >
-                <span></br>Age</span></br>
+               </br>
                     <input type="text" id="age" name="age" placeholder="Age" value="{{age}}" >
-                <span></br>City</span></br>
+               </br>
                     <input type="text" id="city" name="city" placeholder="City" value="{{city}}" >
-                <span></br>Webpage</span></br>
+               </br>
                     <input type="text" id="url" name="url" placeholder="Webpage" value="{{url}}" >
-                {{>csrf}}
                 <div><button name="submit" id="submit">Update</button></div>
                 {{/rows}}
     </form>
