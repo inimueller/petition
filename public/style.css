@@ -130,3 +130,7 @@ form {
     display: block;
     margin: auto;
 }
+
+a {
+    color: mediumpurple;
+}
