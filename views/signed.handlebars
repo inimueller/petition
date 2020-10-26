@@ -6,10 +6,15 @@
 {{!-- this comes from Piotr's canvas!  --}}
 {{/rows}}
 <a id="seesigners" href="/signers">See all {{ count }} trusting members</a>
+   
 <form method="POST" action="/deleteSignature">
    <input type="hidden" name="_csrf" value="{{csrfToken}}">
 
-<button id="deleteSignature">Delete your signature</button></form>
-<form method="POST" action="/edit">
+   <button id="deleteSignature">Delete your signature</button>
+</form>
 
-<button id="editProfile">Edit your profile</button></form>
+<form method="POST" action="/edit">
+      <input type="hidden" name="_csrf" value="{{csrfToken}}">
+      
+      <button id="editProfile">Edit your profile</button>
+</form>
