@@ -96,10 +96,19 @@ button {
 
 #deleteSignature {
     left: 42%;
+    color: mediumpurple;
+    font-size: 16px;
+    background: none !important;
+    border: none;
+    padding: 0 !important;
+    text-decoration: underline;
+    cursor: pointer;
 }
-#editProfile {
-    left: 43%;
-    top: 66%;
+
+#edit {
+    font-size: 16px;
+    margin-left: 43%;
+    text-align: center;
 }
 
 input {
@@ -128,9 +137,10 @@ form {
 }
 
 #seesigners {
-    font-size: 18px;
-    margin-left: 350px;
+    font-size: 16px;
+    margin-left: 40%;
     margin-top: 5px;
+
     /* text-align: center; */
 }
 
