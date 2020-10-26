@@ -94,6 +94,10 @@ button {
     left: 43%;
 }
 
+#deleteSignature {
+    left: 42%;
+}
+
 input {
     font-size: 14px;
     font-family: monospace;
