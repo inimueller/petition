@@ -97,6 +97,9 @@ button {
 #deleteSignature {
     left: 42%;
 }
+#editProfile {
+    left: 42%;
+}
 
 input {
     font-size: 14px;
